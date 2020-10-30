@@ -85,6 +85,8 @@
 #define OIDC_DEFAULT_OAUTH_CLAIM_REMOTE_USER "sub"
 /* default name of the session cookie */
 #define OIDC_DEFAULT_COOKIE "mod_auth_openidc_session"
+/* set Same-Site=None flag on session cookie */
+#define OIDC_DEFAULT_COOKIE_SAME_SITE_NONE 0
 /* default for the HTTP header name in which the remote user name is passed */
 #define OIDC_DEFAULT_AUTHN_HEADER NULL
 /* scrub HTTP headers by default unless overridden (and insecure) */
@@ -1050,6 +1052,7 @@ void *oidc_create_server_config(apr_pool_t *pool, server_rec *svr) {
 	c->remote_user_claim.reg_exp = NULL;
 	c->pass_idtoken_as = OIDC_PASS_IDTOKEN_AS_CLAIMS;
 	c->cookie_http_only = OIDC_DEFAULT_COOKIE_HTTPONLY;
+        c->cookie_same_site_none = OIDC_DEFAULT_COOKIE_SAME_SITE_NONE;
 
 	c->outgoing_proxy = NULL;
 	c->crypto_passphrase = NULL;
@@ -1373,6 +1376,9 @@ void *oidc_merge_server_config(apr_pool_t *pool, void *BASE, void *ADD) {
 	c->cookie_http_only =
 			add->cookie_http_only != OIDC_DEFAULT_COOKIE_HTTPONLY ?
 					add->cookie_http_only : base->cookie_http_only;
+	c->cookie_same_site_none =
+			add->cookie_same_site_none != OIDC_DEFAULT_COOKIE_SAME_SITE_NONE ?
+					add->cookie_same_site_none : base->cookie_same_site_none;
 
 	c->outgoing_proxy =
 			add->outgoing_proxy != NULL ?
@@ -2029,6 +2035,11 @@ const command_rec oidc_config_cmds[] = {
 				(void *) APR_OFFSETOF(oidc_cfg, cookie_http_only),
 				RSRC_CONF,
 				"Defines whether or not the cookie httponly flag is set on cookies."),
+		AP_INIT_FLAG("OIDCCookieSameSiteNone",
+				oidc_set_flag_slot,
+				(void *) APR_OFFSETOF(oidc_cfg, cookie_same_site_none),
+				RSRC_CONF,
+				"Defines whether or not the cookie Same-Site flag is set to None on session cookies."),
 		AP_INIT_TAKE1("OIDCOutgoingProxy",
 				oidc_set_string_slot,
 				(void*)APR_OFFSETOF(oidc_cfg, outgoing_proxy),

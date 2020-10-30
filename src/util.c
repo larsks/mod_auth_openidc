@@ -697,6 +697,18 @@ const char *oidc_util_set_cookie_append_value(request_rec *r, oidc_cfg *c) {
 	return env_var_value;
 }
 
+const char *oidc_util_cookie_ext_value(oidc_cfg *c) {
+    if (c == NULL) {
+        return NULL;
+    }
+
+    if (c->cookie_same_site_none == 0) {
+        return NULL;
+    }
+
+    return OIDC_COOKIE_EXT_SAME_SITE_NONE;
+}
+
 /*
  * set a cookie in the HTTP response headers
  */

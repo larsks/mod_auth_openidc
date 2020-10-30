@@ -576,7 +576,7 @@ static apr_byte_t oidc_authorization_request_set_cookie(request_rec *r,
 	const char *cookieName = oidc_get_state_cookie_name(r, state);
 
 	/* set it as a cookie */
-	oidc_util_set_cookie(r, cookieName, cookieValue, -1, OIDC_COOKIE_EXT_SAME_SITE_NONE);
+	oidc_util_set_cookie(r, cookieName, cookieValue, -1, oidc_util_cookie_ext_value(c));
 
 	free(s_value);
 
@@ -1644,7 +1644,7 @@ static int oidc_discovery(request_rec *r, oidc_cfg *cfg) {
 		oidc_debug(r, "redirecting to external discovery page: %s", url);
 
 		/* set CSRF cookie */
-		oidc_util_set_cookie(r, OIDC_CSRF_NAME, csrf, -1, OIDC_COOKIE_EXT_SAME_SITE_NONE);
+		oidc_util_set_cookie(r, OIDC_CSRF_NAME, csrf, -1, oidc_util_cookie_ext_value(cfg));
 
 		/* do the actual redirect to an external discovery page */
 		apr_table_add(r->headers_out, "Location", url);
@@ -1705,7 +1705,7 @@ static int oidc_discovery(request_rec *r, oidc_cfg *cfg) {
 			"%s<p><input type=\"submit\" value=\"Submit\"></p>\n", s);
 	s = apr_psprintf(r->pool, "%s</form>\n", s);
 
-	oidc_util_set_cookie(r, OIDC_CSRF_NAME, csrf, -1, OIDC_COOKIE_EXT_SAME_SITE_NONE);
+	oidc_util_set_cookie(r, OIDC_CSRF_NAME, csrf, -1, oidc_util_cookie_ext_value(cfg));
 
 	/* now send the HTML contents to the user agent */
 	return oidc_util_html_send(r, "OpenID Connect Provider Discovery",

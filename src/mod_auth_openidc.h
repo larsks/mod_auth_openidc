@@ -342,6 +342,7 @@ typedef struct oidc_cfg {
 	oidc_remote_user_claim_t remote_user_claim;
 	int pass_idtoken_as;
 	int cookie_http_only;
+	int cookie_same_site_none;
 
 	char *outgoing_proxy;
 
@@ -437,6 +438,7 @@ char *oidc_normalize_header_name(const request_rec *r, const char *str);
 
 void oidc_util_set_cookie(request_rec *r, const char *cookieName, const char *cookieValue, apr_time_t expires, const char *ext);
 char *oidc_util_get_cookie(request_rec *r, const char *cookieName);
+const char *oidc_util_cookie_ext_value(oidc_cfg *c);
 apr_byte_t oidc_util_http_get(request_rec *r, const char *url, const apr_table_t *params, const char *basic_auth, const char *bearer_token, int ssl_validate_server, const char **response, int timeout, const char *outgoing_proxy, apr_array_header_t *pass_cookies);
 apr_byte_t oidc_util_http_post_form(request_rec *r, const char *url, const apr_table_t *params, const char *basic_auth, const char *bearer_token, int ssl_validate_server, const char **response, int timeout, const char *outgoing_proxy, apr_array_header_t *pass_cookies);
 apr_byte_t oidc_util_http_post_json(request_rec *r, const char *url, const json_t *data, const char *basic_auth, const char *bearer_token, int ssl_validate_server, const char **response, int timeout, const char *outgoing_proxy, apr_array_header_t *pass_cookies);
