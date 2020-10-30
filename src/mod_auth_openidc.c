@@ -477,7 +477,7 @@ static void oidc_clean_expired_state_cookies(request_rec *r, oidc_cfg *c) {
 						apr_time_t now = apr_time_sec(apr_time_now());
 						if (now > json_integer_value(v) + c->state_timeout) {
 							oidc_error(r, "state has expired");
-							oidc_util_set_cookie(r, cookieName, "", 0);
+							oidc_util_set_cookie(r, cookieName, "", 0, NULL);
 						}
 						json_decref(state);
 					}
@@ -509,7 +509,7 @@ static apr_byte_t oidc_restore_proto_state(request_rec *r, oidc_cfg *c,
 	}
 
 	/* clear state cookie because we don't need it anymore */
-	oidc_util_set_cookie(r, cookieName, "", 0);
+	oidc_util_set_cookie(r, cookieName, "", 0, NULL);
 
 	*proto_state = oidc_get_state_from_cookie(r, cookieValue);
 	if (*proto_state == NULL) return FALSE;
@@ -576,7 +576,7 @@ static apr_byte_t oidc_authorization_request_set_cookie(request_rec *r,
 	const char *cookieName = oidc_get_state_cookie_name(r, state);
 
 	/* set it as a cookie */
-	oidc_util_set_cookie(r, cookieName, cookieValue, -1);
+	oidc_util_set_cookie(r, cookieName, cookieValue, -1, NULL);
 
 	free(s_value);
 
@@ -1644,7 +1644,7 @@ static int oidc_discovery(request_rec *r, oidc_cfg *cfg) {
 		oidc_debug(r, "redirecting to external discovery page: %s", url);
 
 		/* set CSRF cookie */
-		oidc_util_set_cookie(r, OIDC_CSRF_NAME, csrf, -1);
+		oidc_util_set_cookie(r, OIDC_CSRF_NAME, csrf, -1, NULL);
 
 		/* do the actual redirect to an external discovery page */
 		apr_table_add(r->headers_out, "Location", url);
@@ -1705,7 +1705,7 @@ static int oidc_discovery(request_rec *r, oidc_cfg *cfg) {
 			"%s<p><input type=\"submit\" value=\"Submit\"></p>\n", s);
 	s = apr_psprintf(r->pool, "%s</form>\n", s);
 
-	oidc_util_set_cookie(r, OIDC_CSRF_NAME, csrf, -1);
+	oidc_util_set_cookie(r, OIDC_CSRF_NAME, csrf, -1, NULL);
 
 	/* now send the HTML contents to the user agent */
 	return oidc_util_html_send(r, "OpenID Connect Provider Discovery",
@@ -1935,7 +1935,7 @@ static int oidc_handle_discovery_response(request_rec *r, oidc_cfg *c) {
 	if (csrf_cookie) {
 
 		/* clean CSRF cookie */
-		oidc_util_set_cookie(r, OIDC_CSRF_NAME, "", 0);
+		oidc_util_set_cookie(r, OIDC_CSRF_NAME, "", 0, NULL);
 
 		/* compare CSRF cookie value with query parameter value */
 		if ((csrf_query == NULL)

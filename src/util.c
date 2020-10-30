@@ -701,7 +701,7 @@ const char *oidc_util_set_cookie_append_value(request_rec *r, oidc_cfg *c) {
  * set a cookie in the HTTP response headers
  */
 void oidc_util_set_cookie(request_rec *r, const char *cookieName,
-		const char *cookieValue, apr_time_t expires) {
+		const char *cookieValue, apr_time_t expires, const char *ext) {
 
 	oidc_cfg *c = ap_get_module_config(r->server->module_config,
 			&auth_openidc_module);
@@ -736,6 +736,8 @@ void oidc_util_set_cookie(request_rec *r, const char *cookieName,
 	if (appendString != NULL)
 		headerString = apr_psprintf(r->pool, "%s; %s", headerString,
 				appendString);
+	else if (ext != NULL)
+		headerString = apr_psprintf(r->pool, "%s; %s", headerString, ext);
 
 	/* sanity check on overall cookie value size */
 	if (strlen(headerString) > 4093) {

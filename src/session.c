@@ -380,7 +380,7 @@ static apr_status_t oidc_session_save_cache(request_rec *r, session_rec *z) {
 
 		/* set the uuid in the cookie */
 		oidc_util_set_cookie(r, d->cookie, key,
-				c->persistent_session_cookie ? z->expiry : -1);
+				c->persistent_session_cookie ? z->expiry : -1, NULL);
 
 		/* store the string-encoded session in the cache */
 		c->cache->set(r, OIDC_CACHE_SECTION_SESSION, key, z->encoded,
@@ -389,7 +389,7 @@ static apr_status_t oidc_session_save_cache(request_rec *r, session_rec *z) {
 	} else {
 
 		/* clear the cookie */
-		oidc_util_set_cookie(r, d->cookie, "", 0);
+		oidc_util_set_cookie(r, d->cookie, "", 0, NULL);
 
 		/* remove the session from the cache */
 		c->cache->set(r, OIDC_CACHE_SECTION_SESSION, key, NULL, 0);
@@ -430,7 +430,7 @@ static apr_status_t oidc_session_save_cookie(request_rec *r, session_rec *z) {
 		}
 	}
 	oidc_util_set_cookie(r, d->cookie, cookieValue,
-			c->persistent_session_cookie ? z->expiry : -1);
+			c->persistent_session_cookie ? z->expiry : -1, NULL);
 
 	return APR_SUCCESS;
 }
