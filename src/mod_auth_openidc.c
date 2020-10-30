@@ -133,7 +133,7 @@ static void oidc_scrub_request_headers(request_rec *r, const char *claim_prefix,
 	r->headers_in = clean_headers;
 }
 
-static void oidc_scrub_headers(request_rec *r) {
+void oidc_scrub_headers(request_rec *r) {
 	oidc_cfg *cfg = ap_get_module_config(r->server->module_config,
 			&auth_openidc_module);
 

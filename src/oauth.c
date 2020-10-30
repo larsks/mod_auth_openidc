@@ -572,6 +572,12 @@ int oidc_oauth_check_userid(request_rec *r, oidc_cfg *c) {
 	oidc_dir_cfg *dir_cfg = ap_get_module_config(r->per_dir_config,
 			&auth_openidc_module);
 
+	/*
+	* we're going to pass the information that we have to the application,
+	* but first we need to scrub the headers that we're going to use for security reasons
+	*/
+	oidc_scrub_headers(r);
+
 	/* set the user authentication HTTP header if set and required */
 	if ((r->user != NULL) && (dir_cfg->authn_header != NULL)) {
 		oidc_debug(r, "setting authn header (%s) to: %s", dir_cfg->authn_header,
