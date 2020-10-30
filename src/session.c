@@ -430,7 +430,7 @@ static apr_status_t oidc_session_save_cookie(request_rec *r, session_rec *z) {
 		}
 	}
 	oidc_util_set_cookie(r, d->cookie, cookieValue,
-			c->persistent_session_cookie ? z->expiry : -1, NULL);
+			c->persistent_session_cookie ? z->expiry : -1, OIDC_COOKIE_EXT_SAME_SITE_NONE);
 
 	return APR_SUCCESS;
 }
