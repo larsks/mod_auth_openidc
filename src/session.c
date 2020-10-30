@@ -380,7 +380,7 @@ static apr_status_t oidc_session_save_cache(request_rec *r, session_rec *z) {
 
 		/* set the uuid in the cookie */
 		oidc_util_set_cookie(r, d->cookie, key,
-				c->persistent_session_cookie ? z->expiry : -1, NULL);
+				c->persistent_session_cookie ? z->expiry : -1, OIDC_COOKIE_EXT_SAME_SITE_NONE);
 
 		/* store the string-encoded session in the cache */
 		c->cache->set(r, OIDC_CACHE_SECTION_SESSION, key, z->encoded,

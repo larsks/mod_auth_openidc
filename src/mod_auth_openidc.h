@@ -202,6 +202,8 @@ APLOG_USE_MODULE(auth_openidc);
 #define OIDC_CACHE_SECTION_ACCESS_TOKEN "access_token"
 #define OIDC_CACHE_SECTION_PROVIDER "provider"
 
+#define OIDC_COOKIE_EXT_SAME_SITE_NONE   "SameSite=None"
+
 typedef enum {
 	AUTHENTICATE, PASS, RETURN401
 } unauthenticated_action;
