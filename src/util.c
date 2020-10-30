@@ -317,6 +317,12 @@ static const char *oidc_get_current_url_scheme(const request_rec *r) {
 static const char *oidc_get_current_url_port(const request_rec *r, const char *scheme_str) {
 	/* first see if there's a proxy/load-balancer in front of us */
 	const char *port_str = apr_table_get(r->headers_in, "X-Forwarded-Port");
+
+	/* LKS */
+	oidc_debug(r,
+			"port_str from x-forwarded-port=|%s|",
+            port_str);
+
 	if (port_str == NULL) {
 		/* if not we'll take the port from the Host header (as set by the client or ProxyPreserveHost) */
 		const char *host_hdr = apr_table_get(r->headers_in, "Host");
@@ -366,6 +372,11 @@ char *oidc_get_current_url(request_rec *r) {
 	const char *host_str = oidc_get_current_url_host(r);
 	const char *port_str = oidc_get_current_url_port(r, scheme_str);
 	port_str = port_str ? apr_psprintf(r->pool, ":%s", port_str) : "";
+
+	/* LKS */
+	oidc_debug(r,
+			"scheme_str=|%s|, host_str=|%s|, port_str=|%s|",
+            scheme_str, host_str, port_str);
 
 	char *url = apr_pstrcat(r->pool, scheme_str, "://", host_str, port_str,
 			r->uri, (r->args != NULL && *r->args != '\0' ? "?" : ""), r->args,
